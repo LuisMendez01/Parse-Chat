@@ -13,12 +13,19 @@ class LoginViewController: UIViewController {
 
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    
+    /*******************************************
+     * UIVIEW CONTROLLER LIFECYCLES FUNCTIONS *
+     *******************************************/
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
     
+    /***********************
+     * IBACTIONS FUNCTIONS *
+     ***********************/
     @IBAction func loginAction(_ sender: Any) {
             
         let username = usernameTextField.text ?? ""
@@ -29,7 +36,7 @@ class LoginViewController: UIViewController {
             //ActionSheet
             let alertController = UIAlertController(title: "LogIn", message: "Make sure username & password are correct", preferredStyle: .actionSheet)
             
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
+            let cancelAction = UIAlertAction(title: "Dismiss", style: .cancel) { (action) in
                 // handle case of user canceling. Doing nothing will dismiss the view.
             }
             // add the cancel action to the alert controller
@@ -42,17 +49,21 @@ class LoginViewController: UIViewController {
             PFUser.logInWithUsername(inBackground: username, password: password) { (user: PFUser?, error: Error?) in
                 if let error = error {
                     //ActionSheet
-                    let alertController2 = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .actionSheet)
+                    let alertController2 = UIAlertController(title: "Error", message: "User log in failed: \(error.localizedDescription)", preferredStyle: .actionSheet)
                     
-                    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
+                    let cancelAction = UIAlertAction(title: "Dismiss", style: .cancel) { (action) in
                         // handle case of user canceling. Doing nothing will dismiss the view.
                     }
                     // add the cancel action to the alert controller
                     alertController2.addAction(cancelAction)
+                    
+                    self.present(alertController2, animated: true, completion: nil)
+                    
                     print("User log in failed: \(error.localizedDescription)")
                 } else {
                     print("User logged in successfully")
                     // display view controller that needs to shown after successful login
+                    self.performSegue(withIdentifier: "toChatSegue", sender: nil)
                 }
             }
         }//else
@@ -67,18 +78,19 @@ class LoginViewController: UIViewController {
             newUser.username = usernameTextField.text
             //newUser.email = emailField.text
             newUser.password = passwordTextField.text
-            print("Out3")
+        
             if (usernameTextField.text?.isEmpty)! || (passwordTextField.text?.isEmpty)! {
                 
                 //Alert
                 let alertController = UIAlertController(title: "Alert", message: "Both fields need to be entered", preferredStyle: .alert)
-                print("In")
+                
                 // create a cancel action
                 let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
                     // handle cancel response here. Doing nothing will dismiss the view.
                 }
                 // add the cancel action to the alertController
                 alertController.addAction(cancelAction)
+                self.present(alertController, animated: true, completion: nil)
 
             }
             else {
@@ -93,10 +105,13 @@ class LoginViewController: UIViewController {
                         }
                         // add the cancel action to the alert controller
                         alertController2.addAction(cancelAction)
+                        self.present(alertController2, animated: true, completion: nil)
+                        
                         print(error.localizedDescription)
                     } else {
                         print("User Registered successfully")
                         // manually segue to logged in view
+                        self.performSegue(withIdentifier: "toChatSegue", sender: nil)
                     }
                 }
             }//else

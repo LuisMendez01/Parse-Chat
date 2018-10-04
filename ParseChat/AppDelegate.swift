@@ -21,6 +21,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             configuration.applicationId = "CodePath-Parse"
             configuration.server = "http://45.79.67.127:1337/parse"
         }))
+        
+        if let currentUser = PFUser.current() {
+            print("Welcome back \(currentUser.username!) 😀")
+                
+                // Load Chat view controller and set as root view controller
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            // view controller currently being set in Storyboard as default will be overridden
+            let ChatVC = storyboard.instantiateViewController(withIdentifier: "ChatVC") as! ChatViewController
+            
+            //do this if you want a NavBarController on top of VC
+            let navigationController = UINavigationController(rootViewController: ChatVC)
+            window!.rootViewController = navigationController
+            
+        }
+        
+        NotificationCenter.default.addObserver(forName: Notification.Name("didLogout"), object: nil, queue: OperationQueue.main) { (Notification) in
+            print("Logout notification received")
+            
+            // Load and show the login view controller
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let loginVC = storyboard.instantiateViewController(withIdentifier: "MainVC") as! LoginViewController
+            
+            UIView.transition(with: self.window!, duration: 0.4, options: .transitionCrossDissolve , animations: {
+                self.window?.rootViewController = loginVC
+            }, completion: { completed in
+                // maybe do something here
+            })
+        }
         return true
     }
 
