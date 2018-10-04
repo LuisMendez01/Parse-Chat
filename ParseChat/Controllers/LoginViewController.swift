@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import MBProgressHUD
 
 class LoginViewController: UIViewController {
 
@@ -46,6 +47,9 @@ class LoginViewController: UIViewController {
                 // optional code for what happens after the alert controller has finished presenting
             }
         } else {
+            // Display HUD right before the request is made
+            MBProgressHUD.showAdded(to: self.view, animated: true)
+            
             PFUser.logInWithUsername(inBackground: username, password: password) { (user: PFUser?, error: Error?) in
                 if let error = error {
                     //ActionSheet
@@ -57,13 +61,21 @@ class LoginViewController: UIViewController {
                     // add the cancel action to the alert controller
                     alertController2.addAction(cancelAction)
                     
-                    self.present(alertController2, animated: true, completion: nil)
+                    self.present(alertController2, animated: true){
+                        // Hide HUD once the network request comes back (must be done on main UI thread)
+                        MBProgressHUD.hide(for: self.view, animated: true)
+                    }
                     
                     print("User log in failed: \(error.localizedDescription)")
                 } else {
                     print("User logged in successfully")
-                    // display view controller that needs to shown after successful login
-                    self.performSegue(withIdentifier: "toChatSegue", sender: nil)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // change 2 to desired number of seconds
+                        // Hide HUD once the network request comes back (must be done on main UI thread)
+                        MBProgressHUD.hide(for: self.view, animated: true)
+                        // manually segue to logged in view
+                        self.performSegue(withIdentifier: "toChatSegue", sender: nil)
+                    }
                 }
             }
         }//else
@@ -71,52 +83,61 @@ class LoginViewController: UIViewController {
     
     @IBAction func signUpAction(_ sender: Any) {
         
-            // initialize a user object
-            let newUser = PFUser()
+        // initialize a user object
+        let newUser = PFUser()
             
-            // set user properties
-            newUser.username = usernameTextField.text
-            //newUser.email = emailField.text
-            newUser.password = passwordTextField.text
+        // set user properties
+        newUser.username = usernameTextField.text
+        //newUser.email = emailField.text
+        newUser.password = passwordTextField.text
         
-            if (usernameTextField.text?.isEmpty)! || (passwordTextField.text?.isEmpty)! {
+        if (usernameTextField.text?.isEmpty)! || (passwordTextField.text?.isEmpty)! {
                 
-                //Alert
-                let alertController = UIAlertController(title: "Alert", message: "Both fields need to be entered", preferredStyle: .alert)
+            //Alert
+            let alertController = UIAlertController(title: "Alert", message: "Both fields need to be entered", preferredStyle: .alert)
                 
-                // create a cancel action
-                let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
-                    // handle cancel response here. Doing nothing will dismiss the view.
-                }
-                // add the cancel action to the alertController
-                alertController.addAction(cancelAction)
-                self.present(alertController, animated: true, completion: nil)
-
+            // create a cancel action
+            let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
+                // handle cancel response here. Doing nothing will dismiss the view.
             }
-            else {
-                // call sign up function on the object
-                newUser.signUpInBackground { (success: Bool, error: Error?) in
-                    if let error = error {
-                        //Alert
-                        let alertController2 = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .actionSheet)
+            // add the cancel action to the alertController
+            alertController.addAction(cancelAction)
+            self.present(alertController, animated: true, completion: nil)
+
+        }
+        else {
+            // Display HUD right before the request is made
+            MBProgressHUD.showAdded(to: self.view, animated: true)
+            
+            // call sign up function on the object
+            newUser.signUpInBackground { (success: Bool, error: Error?) in
+                if let error = error {
+                    //Alert
+                    let alertController2 = UIAlertController(title: "Error", message:error.localizedDescription, preferredStyle: .actionSheet)
                         
-                        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
-                            // handle case of user canceling. Doing nothing will dismiss the view.
-                        }
-                        // add the cancel action to the alert controller
-                        alertController2.addAction(cancelAction)
-                        self.present(alertController2, animated: true, completion: nil)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
+                        // handle case of user canceling. Doing nothing will dismiss the view.
+                    }
+                    // add the cancel action to the alert controller
+                    alertController2.addAction(cancelAction)
+                    self.present(alertController2, animated: true){
+                            MBProgressHUD.hide(for: self.view, animated: true)
+                    }
                         
-                        print(error.localizedDescription)
-                    } else {
-                        print("User Registered successfully")
+                    print(error.localizedDescription)
+                } else {
+                    print("User Registered successfully")
+                        
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // change 2 to desired number of seconds
+                        // Hide HUD once the network request comes back (must be done on main UI thread)
+                        MBProgressHUD.hide(for: self.view, animated: true)
                         // manually segue to logged in view
                         self.performSegue(withIdentifier: "toChatSegue", sender: nil)
                     }
                 }
-            }//else
-        }
-
+            }
+        }//else
+    }
 }
 
 //ActionSheet

@@ -8,6 +8,8 @@
 
 import UIKit
 import Parse
+import MBProgressHUD
+import Alamofire
 
 class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -25,6 +27,9 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         tableView.delegate = self
         tableView.dataSource = self
         
+        //Remove table view row outlines in viewDidLoad()
+        tableView.separatorStyle = .none
+        
         // Auto size row height based on cell autolayout constraints
         tableView.rowHeight = UITableView.automaticDimension
         // Provide an estimated row height. Used for calculating scroll indicator
@@ -35,6 +40,8 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         //Set title button logOut
         setRightBtnLogOut()
+        
+        //af_setImage(withURL:)
     }
     
     func setRightBtnLogOut(){
