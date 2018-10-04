@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 import MBProgressHUD
-import Alamofire
+import AlamofireImage
 
 class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -24,6 +24,8 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        MessageTextField.becomeFirstResponder()
+        
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -41,7 +43,6 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         //Set title button logOut
         setRightBtnLogOut()
         
-        //af_setImage(withURL:)
     }
     
     func setRightBtnLogOut(){
@@ -156,14 +157,31 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "chatCell", for: indexPath as IndexPath) as! ChatViewCell
         
+        var urlString = ""
+        
         if let user = chatMessages[indexPath.row]["user"] as? PFUser {
             // User found! update username label with username
             cell.usernameLabel.text = user.username
+            urlString = "https://api.adorable.io/avatars/105/\(user.username!)"
         } else {
             // No user found, set default username
             cell.usernameLabel.text = "🤖"
+            urlString = "https://api.adorable.io/avatars/105/abott@adorable.png"
         }
         
+        let filter = AspectScaledToFillSizeWithRoundedCornersFilter(
+            size: cell.adorableAvatarImageView.frame.size,
+            radius: 1.0
+        )
+        
+        cell.adorableAvatarImageView?.af_setImage(
+        withURL: URL(string: urlString)!,
+            placeholderImage: UIImage(named: "avatar1.png"),
+            filter: filter,
+            imageTransition: .crossDissolve(1),
+            runImageTransitionIfCached: false,
+            completion: (nil)
+        )
         cell.messageTextLabel.text = (chatMessages[indexPath.row]["text"] as! String)
         
         return cell

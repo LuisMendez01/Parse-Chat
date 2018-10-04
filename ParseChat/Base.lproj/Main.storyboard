@@ -84,6 +84,7 @@
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RfM-Ly-oIv">
                                 <rect key="frame" x="20" y="108" width="325" height="30"/>
+                                <color key="backgroundColor" red="0.82745098039999998" green="0.87843137250000003" blue="0.89019607840000003" alpha="0.92000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="325" id="dpd-eH-DUS"/>
                                 </constraints>
@@ -146,6 +147,7 @@
                                                     </constraints>
                                                 </imageView>
                                             </subviews>
+                                            <color key="backgroundColor" red="0.82745098039999998" green="0.87843137250000003" blue="0.89019607840000003" alpha="0.92000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="XPr-is-Mpi" secondAttribute="bottom" constant="35" id="4lM-Fa-oiz"/>
                                                 <constraint firstItem="XPr-is-Mpi" firstAttribute="top" secondItem="wjX-Uc-qRE" secondAttribute="bottom" constant="4" id="Jmy-62-B4P"/>
@@ -159,6 +161,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="adorableAvatarImageView" destination="wjX-Uc-qRE" id="jNL-UI-FV5"/>
                                             <outlet property="bubbleView" destination="XPr-is-Mpi" id="3gj-X8-zKq"/>
                                             <outlet property="messageTextLabel" destination="g6U-il-Dh6" id="Ana-oW-v4J"/>
                                             <outlet property="usernameLabel" destination="Kjk-3C-uQd" id="Pcz-V5-M1B"/>

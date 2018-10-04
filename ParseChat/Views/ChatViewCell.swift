@@ -15,6 +15,7 @@ class ChatViewCell: UITableViewCell {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var bubbleView: UIView!
     
+    @IBOutlet weak var adorableAvatarImageView: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
         
